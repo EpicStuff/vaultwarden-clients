@@ -18,8 +18,6 @@ import {
   NotificationResponse,
 } from "../../models/response/notification.response";
 import { EnvironmentService } from "../../platform/abstractions/environment.service";
-import { PlatformUtilsService } from "../../platform/abstractions/platform-utils.service";
-import { InsecureUrlNotAllowedError } from "../../services/api-errors";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "../abstractions/anonymous-hub.service";
 
 export class AnonymousHubService implements AnonymousHubServiceAbstraction {
@@ -29,14 +27,10 @@ export class AnonymousHubService implements AnonymousHubServiceAbstraction {
   constructor(
     private environmentService: EnvironmentService,
     private authRequestService: AuthRequestServiceAbstraction,
-    private platformUtilsService: PlatformUtilsService,
   ) {}
 
   async createHubConnection(token: string) {
     this.url = (await firstValueFrom(this.environmentService.environment$)).getNotificationsUrl();
-    if (!this.url.startsWith("https://") && !this.platformUtilsService.isDev()) {
-      throw new InsecureUrlNotAllowedError();
-    }
 
     this.anonHubConnection = new HubConnectionBuilder()
       .withUrl(this.url + "/anonymous-hub?Token=" + token, {

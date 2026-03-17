@@ -1026,7 +1026,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: SignalRConnectionService,
     useClass: SignalRConnectionService,
-    deps: [ApiServiceAbstraction, LogService, PlatformUtilsServiceAbstraction],
+    deps: [ApiServiceAbstraction, LogService],
   }),
   safeProvider({
     provide: WebPushConnectionService,
@@ -1311,7 +1311,7 @@ const safeProviders: SafeProvider[] = [
   safeProvider({
     provide: AnonymousHubServiceAbstraction,
     useClass: AnonymousHubService,
-    deps: [EnvironmentService, AuthRequestServiceAbstraction, PlatformUtilsServiceAbstraction],
+    deps: [EnvironmentService, AuthRequestServiceAbstraction],
   }),
   safeProvider({
     provide: ValidationServiceAbstraction,
