@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -62,25 +62,6 @@ function selfHostedEnvSettingsFormValidator(): ValidatorFn {
   };
 }
 
-function onlyHttpsValidator(): ValidatorFn {
-  const i18nService = inject(I18nService);
-  const platformUtilsService = inject(PlatformUtilsService);
-
-  return (control: AbstractControl): ValidationErrors | null => {
-    const url = control.value as string;
-
-    if (url && !url.startsWith("https://") && !platformUtilsService.isDev()) {
-      return {
-        onlyHttpsAllowed: {
-          message: i18nService.t("selfHostedEnvMustUseHttps"),
-        },
-      }; // invalid
-    }
-
-    return null; // valid
-  };
-}
-
 /**
  * Dialog for configuring self-hosted environment settings.
  */
@@ -120,13 +101,12 @@ export class SelfHostedEnvConfigDialogComponent implements OnInit, OnDestroy {
 
   formGroup = this.formBuilder.group(
     {
-      baseUrl: ["", [onlyHttpsValidator()]],
-      webVaultUrl: ["", [onlyHttpsValidator()]],
-      apiUrl: ["", [onlyHttpsValidator()]],
-      identityUrl: ["", [onlyHttpsValidator()]],
-      iconsUrl: ["", [onlyHttpsValidator()]],
-      notificationsUrl: ["", [onlyHttpsValidator()]],
-      sendUrl: ["", [onlyHttpsValidator()]],
+      baseUrl: [""],
+      webVaultUrl: [""],
+      apiUrl: [""],
+      identityUrl: [""],
+      iconsUrl: [""],
+      notificationsUrl: [""],
     },
     { validators: selfHostedEnvSettingsFormValidator() },
   );
@@ -198,11 +178,10 @@ export class SelfHostedEnvConfigDialogComponent implements OnInit, OnDestroy {
       });
   }
   submit = async () => {
-    this.formGroup.markAllAsTouched();
     this.showErrorSummary = false;
 
     if (this.formGroup.invalid) {
-      this.showErrorSummary = Boolean(this.formGroup.errors?.["atLeastOneUrlIsRequired"]);
+      this.showErrorSummary = true;
       return;
     }
 

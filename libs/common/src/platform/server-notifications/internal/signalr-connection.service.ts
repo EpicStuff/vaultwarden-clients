@@ -10,10 +10,8 @@ import { Observable, Subscription } from "rxjs";
 
 import { ApiService } from "../../../abstractions/api.service";
 import { NotificationResponse } from "../../../models/response/notification.response";
-import { InsecureUrlNotAllowedError } from "../../../services/api-errors";
 import { UserId } from "../../../types/guid";
 import { LogService } from "../../abstractions/log.service";
-import { PlatformUtilsService } from "../../abstractions/platform-utils.service";
 
 // 2 Minutes
 const MIN_RECONNECT_TIME = 2 * 60 * 1000;
@@ -72,17 +70,12 @@ export class SignalRConnectionService {
   constructor(
     private readonly apiService: ApiService,
     private readonly logService: LogService,
-    private readonly platformUtilsService: PlatformUtilsService,
     private readonly hubConnectionBuilderFactory: () => HubConnectionBuilder = () =>
       new HubConnectionBuilder(),
     private readonly timeoutManager: TimeoutManager = globalThis,
   ) {}
 
   connect$(userId: UserId, notificationsUrl: string) {
-    if (!notificationsUrl.startsWith("https://") && !this.platformUtilsService.isDev()) {
-      throw new InsecureUrlNotAllowedError();
-    }
-
     return new Observable<SignalRNotification>((subscriber) => {
       const connection = this.hubConnectionBuilderFactory()
         .withUrl(notificationsUrl + "/hub", {
