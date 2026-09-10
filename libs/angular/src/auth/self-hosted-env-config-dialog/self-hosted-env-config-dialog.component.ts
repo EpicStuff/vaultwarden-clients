@@ -15,8 +15,6 @@ import {
   EnvironmentService,
   Region,
 } from "@bitwarden/common/platform/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/platform/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/platform/abstractions/platform-utils.service";
 import {
   DialogRef,
   AsyncActionsModule,
@@ -107,6 +105,7 @@ export class SelfHostedEnvConfigDialogComponent implements OnInit, OnDestroy {
       identityUrl: [""],
       iconsUrl: [""],
       notificationsUrl: [""],
+      sendUrl: [""],
     },
     { validators: selfHostedEnvSettingsFormValidator() },
   );
